@@ -19,7 +19,6 @@ The primary goal of this project is to train a ML Model and build an interactive
 
 ### Key Objectives:
 * Preprocess and clean ball-by-ball IPL data.
-* Engineer features like **Runs Left**, **Balls Left**, and **Required Run Rate**.
 * Compare multiple ML models (Logistic Regression, SVC, Decision Trees, Random Forest).
 * Deploy the final pipeline as a live web tool using Streamlit
   
