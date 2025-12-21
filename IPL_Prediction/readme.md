@@ -10,29 +10,41 @@ This repository contains an end‑to‑end **IPL Win Predictor** project, built 
 
 ---
 
-## 🏏 Project Goal
-The primary goal of this project is to build an interactive web application that:
+## 🏏 Project Goal 🎯
+The primary goal of this project is to train a ML Model and build an interactive web application that:
 * Predicts the **win probability** of the batting team while chasing a target.
 * Provides a simple UI to input live match conditions (teams, venue, target, score, overs, wickets).
-* Returns winning chances for both teams based on historical patterns.
+* Returns winning chances for both teams based on historical patterns from 2008–2024
+
+
+### Key Objectives:
+* Preprocess and clean ball-by-ball IPL data.
+* Engineer features like **Runs Left**, **Balls Left**, and **Required Run Rate**.
+* Compare multiple ML models (Logistic Regression, SVC, Decision Trees, Random Forest).
+* Deploy the final pipeline as a live web tool using Streamlit
+  
+---
+
+## 📊 Dataset & Feature Engineering
+The model was trained using Kaggle’s [IPL Complete Dataset](https://www.kaggle.com/datasets/patrickb1912/ipl-complete-dataset-20082020).
+
+### Features Used for Prediction:
+* **Categorical**: `batting_team`, `bowling_team`, `city`.
+* **Numerical**: `runs_left`, `balls_left`, `wickets_left`, `total_runs_x` (target), `current_runrate`, `required_runrate`.
 
 ---
 
-## 📊 Dataset & Features
-The model is trained on Kaggle’s [IPL Complete Dataset (2008–2020)](https://www.kaggle.com/datasets/patrickb1912/ipl-complete-dataset-20082020).
+## 🤖 Model Comparison & Results
+We implemented a `ColumnTransformer` to handle One-Hot Encoding and evaluated several classifiers:
 
-### Feature Engineering
-To simulate a T20 chase, the following features were calculated from user input:
-* **Runs Left**: Target − Current Score
-* **Balls Left**: 120 − (Overs × 6)
-* **Wickets Left**: 10 − Wickets Out
-* **Current Run Rate (CRR)**: Current Score ÷ Overs Completed
-* **Required Run Rate (RRR)**: (Runs Left × 6) ÷ Balls Left
+| Model | Accuracy Score | Verdict |
+| :--- | :--- | :--- |
+| **Random Forest Classifier** | **99.86%** | **Selected ✅ (Robust & Generalizable)** |
+| Decision Tree Classifier | 99.02% | High Accuracy (Potential Overfitting) |
+| Logistic Regression | 81.02% | Reliable Baseline |
+| SVC | 78.60% | Underperformed on this dataset |
 
----
-
-## 🤖 Machine Learning Pipeline
-Multiple models were evaluated, including Logistic Regression and SVC, but the **Random Forest Classifier** was selected for final deployment.
+The final model used is a **RandomForest** with 250 estimators, wrapped in a Scikit-Learn `Pipeline` for seamless deployment.
 
 | Component | Description |
 | :--- | :--- |
@@ -43,10 +55,20 @@ Multiple models were evaluated, including Logistic Regression and SVC, but the *
 
 ---
 
+### Feature Engineering (on app.py for Streamlit app)
+To simulate a T20 chase, the following features were calculated from user input:
+* **Runs Left**: Target − Current Score
+* **Balls Left**: 120 − (Overs × 6)
+* **Wickets Left**: 10 − Wickets Out
+* **Current Run Rate (CRR)**: Current Score ÷ Overs Completed
+* **Required Run Rate (RRR)**: (Runs Left × 6) ÷ Balls Left
+
+---
+
 ## 🌐 How to Use the App
 1.  **Select Teams**: Choose the Batting and Bowling teams.
 2.  **Select Venue**: Choose the city where the match is played.
-3.  **Enter Match Details**: Input the Target, Current Score, Overs Completed, and Wickets fallen.
+3.  **Enter Match Details**: Input the Target(Runs), Current Score, Overs Completed, and Wickets fallen.
 4.  **Predict**: Click "Predict Probability" to see the win/loss percentage for both teams.
 
 ---
