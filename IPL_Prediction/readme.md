@@ -34,6 +34,50 @@ The model was trained using Kaggle’s [IPL Complete Dataset](https://www.kaggle
 
 ---
 
+### 📦 Project Libraries & Their Roles
+These libraries form the backbone of the data processing and machine learning pipeline.
+
+| Icon | Library / Module | Use in IPL Win Predictor |
+| :--- | :--- | :--- |
+| 🐼 | **Pandas** | Used for data manipulation, merging datasets, and creating the feature-rich `df_final` from raw CSVs. |
+| 🔢 | **NumPy** | Handles numerical computations and array manipulations behind the scenes. |
+| ✂️ | **train_test_split** | Splits data into Training sets (to teach the model) and Test sets (to verify its accuracy). |
+| 🛠️ | **ColumnTransformer** | Applies different preprocessing (like OneHotEncoding) to specific columns while ignoring others. |
+| 🏷️ | **OneHotEncoder** | Converts text data (Teams, Cities) into binary numbers for model compatibility. |
+| 🔗 | **Pipeline** | Bundles preprocessing and the model into a single object for consistent deployment. |
+| 🤖 | **ML Models** | **LogisticRegression, SVC, DecisionTree, RandomForest**: The "brains" that calculate win probabilities. |
+
+---
+
+### 🧮 Data Processing Functions
+The following functions were used to transform raw ball-by-ball data into a refined dataset.
+
+| Function | Project Purpose & Explanation |
+| :--- | :--- |
+| **`describe(include='object').T`** | **Summary Statistics**: Used to analyze categorical data (teams, cities) and check for unique values or missing entries. |
+| **`df_deliveries.groupby...sum()`** | **Score Calculation**: Groups data by `match_id` to calculate the total runs scored in the first innings. |
+| **`df_matches.merge(...)`** | **Data Integration**: Joins match-level info (winner, venue) with total scores using `match_id` as the key. |
+| **`isin(teams)`** | **Data Filtering**: Ensures the dataset only contains matches involving the 8 active IPL teams. |
+| **`pd.to_numeric(..., errors='coerce')`** | **Data Cleaning**: Safely converts columns to numbers, turning invalid text into `NaN` to prevent crashes. |
+| **`.fillna(0).astype(int)`** | **Handling Missing Data**: Replaces empty cumulative run values with `0` and formats them as integers. |
+| **`def result(row):`** | **Target Labeling**: A custom logic function that creates the "Result" column (1 for Win, 0 for Loss). |
+| **`.sample(df_final.shape[0])`** | **Data Shuffling**: Randomizes the dataset so the model doesn't learn based on chronological match order. |
+
+---
+
+### 🧪 Model Training & Export Logic
+These steps ensure the model is robust, reproducible, and ready for production.
+
+| Code Snippet | Project Purpose & Explanation |
+| :--- | :--- |
+| **`.isnull().sum()`** | **Quality Check**: Counts missing values per column to ensure data integrity before training. |
+| **`.dropna(inplace=True)`** | **Row Removal**: Deletes incomplete rows (e.g., matches missing city info) to maintain model quality. |
+| **`train_test_split(..., random_state=1)`** | **Reproducibility**: Ensures the 80/20 data split remains identical every time the code is executed. |
+| **`train_test_split(..., random_state=42)`** | **Standardization**: Uses the "42" seed to maintain controlled randomness during model evaluation. |
+| **`pickle.dump(pipe_rf, ...)`** | **Model Export**: Saves the trained Random Forest Pipeline as `ipl_model.pkl` for use in the Streamlit app. |
+
+---
+
 ## 🤖 Model Comparison & Results
 We implemented a `ColumnTransformer` to handle One-Hot Encoding and evaluated several classifiers:
 
